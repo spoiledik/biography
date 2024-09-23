@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>biography spoiled</title>
+    <style>
+        body {
+            background-color: #0e0d0dfb;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            overflow: hidden; /* Убираем полосы прокрутки */
+        }
+
+        /* Панель с кнопками */
+        .fixed-buttons {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: black;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            z-index: 1000;
+            padding: 10px 0;
+        }
+
+        .btn {
+            background-color: rgb(0, 0, 0);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-transform: uppercase;
+            box-shadow: 0px 0px 04px rgba(0, 0, 0, 0.6); /* Тень кнопок */
+        }
+
+        .btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.8); /* Тень при наведении */
+        }
+
+        /* Иконка настроек */
+        .settings {
+            position: fixed;
+            top: 15px;
+            right: 20px;
+            cursor: pointer;
+            z-index: 1000;
+            transition: transform 0.3s;
+        }
+
+        .settings:hover {
+            transform: scale(1.1);
+        }
+
+        .settings .line {
+            width: 30px;
+            height: 4px;
+            background-color: white;
+            margin: 6px 0;
+        }
+
+        /* Меню настроек */
+        .settings-menu {
+            display: none;
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background-color: black;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0px 0px 20px 5px red;
+            z-index: 1001;
+            width: 200px;
+            text-align: center;
+        }
+
+        .settings-menu button {
+            background-color: black;
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            text-shadow: 0px 0px 5px red;
+        }
+
+        .settings-menu button:hover {
+            box-shadow: 0 0 10px red;
+        }
+
+        /* Заголовок "Настройки" в окне настроек */
+        .settings-title {
+            color: white;
+            font-size: 24px;
+            text-shadow: 0px 0px 5px red;
+            margin-bottom: 20px;
+        }
+
+        /* Окно с данными пользователя */
+        .user-data {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            background-color: black;
+            border: 2px solid red;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0px 0px 20px red;
+            z-index: 2000;
+            text-align: center; /* Текст по центру */
+        }
+
+        .user-data p {
+            color: white;
+            text-shadow: 0px 0px 5px red;
+            margin: 10px 0;
+        }
+
+        /* Рамка для текста */
+        .bio-container {
+            border: 10px solid transparent;
+            padding: 20px;
+            width: 30%;
+            height: 650px;
+            text-align: left; /* Текст выровнен по левому краю */
+            position: relative;
+            margin-top: 100px;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 0 20px red;
+        }
+
+        /* Переливающийся текст */
+        .rainbow-text {
+            font-size: 27px;
+            background: linear-gradient(90deg, rgb(255, 2, 2), rgb(70, 5, 5), rgb(255, 4, 4), rgb(66, 5, 5), rgb(228, 3, 3), rgb(61, 4, 4), rgb(253, 2, 2));
+            background-size: 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbow 5s ease-in-out infinite;
+        }
+
+        @keyframes rainbow {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .bio-title {
+            text-align: center;
+            font-size: 38px;
+            margin-bottom: 20px;
+        }
+
+        /* Переливающийся текст внизу рамки */
+        .footer-text {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 18px;
+            background: linear-gradient(90deg, rgb(255, 2, 2), rgb(70, 5, 5), rgb(255, 4, 4), rgb(66, 5, 5), rgb(228, 3, 3), rgb(61, 4, 4), rgb(253, 2, 2));
+            background-size: 500%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbow 5s ease-in-out infinite;
+        }
+
+        /* Счётчик просмотров */
+        #view-counter {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            font-weight: bold;
+            font-size: 20px;
+            background: linear-gradient(90deg, rgb(255, 2, 2), rgb(70, 5, 5), rgb(255, 4, 4), rgb(66, 5, 5), rgb(228, 3, 3), rgb(61, 4, 4), rgb(253, 2, 2));
+            background-size: 500%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbow 5s ease-in-out infinite;
+        }
+
+        /* Нижняя черная панель */
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: black;
+            height: 60px;
+            z-index: 1000;
+        }
+
+        /* Символ "⨯" от курсора */
+        .cross {
+            position: absolute;
+            font-size: 20px;
+            color: rgb(214, 5, 5);
+            animation: cross-fade 0.5s linear forwards;
+        }
+
+        @keyframes cross-fade {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(200px);
+            }
+        }
+
+        /* Фото для темной темы */
+        .side-image.dark {
+            position: absolute;
+            top: 100px;
+            max-width: 450px;
+        }
+
+        .side-image.dark.left {
+            left: 0;
+            margin-left: 20px;
+        }
+
+        .side-image.dark.right {
+            right: 0;
+            margin-right: 20px;
+        }
+
+        /* Фото для светлой темы */
+        .side-image.light {
+            position: absolute;
+            top: 100px;
+            max-width: 450px;
+        }
+
+        .side-image.light.left {
+            left: 0;
+            margin-left: 20px;
+        }
+
+        .side-image.light.right {
+            right: 0;
+            margin-right: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Верхняя панель с кнопками -->
+    <div class="fixed-buttons">
+        <button class="btn" onclick="navigate('biography')">Моя биография</button>
+        <button class="btn" onclick="navigate('services')">Мои услуги</button>
+        <button class="btn" onclick="navigate('chill')">Мои отзывы</button>
+    </div>
+
+    <!-- Иконка настроек -->
+    <div class="settings" onclick="toggleSettingsMenu()">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+    </div>
+
+    <!-- Меню настроек -->
+    <div class="settings-menu" id="settingsMenu">
+        <div class="settings-title">Настройки</div> <!-- Добавлен заголовок "Настройки" -->
+        <button onclick="toggleTheme()">Переключить тему</button>
+        <button onclick="showUserData()">Показать фокус</button>
+    </div>
+
+    <!-- Центральный блок для текста -->
+    <div class="bio-container" id="content">
+        <h1 class="rainbow-text bio-title"><b>biography spoiled</b></h1>
+        <p class="rainbow-text" id="dynamic-text">
+            <span>Birthday:</span> 26.08<br>
+            <span>Years old:</span> 19<br>
+            <span>Country:</span> Ukraine<br>
+            <span>Language:</span> Russian, English, Python, Java
+        </p>
+
+        <!-- Переливающийся текст внизу -->
+        <div class="footer-text">Сверяйте теги - @wetwolf</div>
+    </div>
+
+    <!-- Окно с данными пользователя -->
+    <div class="user-data" id="userData">
+        <p id="ip">IP:</p>
+        <p id="country">Country:</p>
+        <p id="region">Region:</p>
+        <p id="city">City:</p> <!-- Добавлена строка "City" -->
+    </div>
+
+    <!-- Изображения для темной темы -->
+    <img class="side-image dark left" id="dark-left" src="images/dark-photo-left.jpg" alt="Dark Theme Left">
+    <img class="side-image dark right" id="dark-right" src="images/dark-photo-right.jpg" alt="Dark Theme Right">
+
+    <!-- Изображения для светлой темы (скрыты по умолчанию) -->
+    <img class="side-image light left" id="light-left" src="images/light-photo-left.jpg" alt="Light Theme Left" style="display:none;">
+    <img class="side-image light right" id="light-right" src="images/light-photo-right.jpg" alt="Light Theme Right" style="display:none;">
+
+    <!-- Счетчик просмотров -->
+    <div id="view-counter">Просмотры: 0</div>
+
+    <!-- Черная панель внизу -->
+    <div class="bottom-bar"></div>
+
+    <script>
+        // Навигация между страницами
+        function navigate(page) {
+            let content = '';
+            switch (page) {
+                case 'biography':
+                    content = `<h1 class="rainbow-text bio-title">biography spoiled</h1>
+                               <p class="rainbow-text" id="dynamic-text">
+                               <span>Birthday:</span> 26.08<br>
+                               <span>Years old:</span> 19<br>
+                               <span>Country:</span> Ukraine<br>
+                               <span>Language:</span> Russian, English, Python, Java</p>
+                               <div class="footer-text">Сверяйте теги - @wetwolf</div>`;
+                    break;
+                case 'services':
+                    content = `<h1 class="rainbow-text bio-title">biography spoiled</h1>
+                               <p class="rainbow-text">
+                               <span>Приобрести услугу Full doxing:</span> 5$<br>
+                               <span>Приобрести услугу DDoS attack:</span> 5$<br>
+                               <span>Приобрести услугу Kill tg account:</span> 3$<br>
+                               <span>Приобрести услугу Swat user:</span> 50$<br><br>
+                               <span>Приобрести услугу создание ботов:</span> от 5$<br>
+                               <span>Приобрести услугу создание сайтов:</span> от 10$
+                               </p>
+                               <div class="footer-text">Сверяйте теги - @wetwolf</div>`;
+                    break;
+                case 'chill':
+                    content = `<h1 class="rainbow-text bio-title">biography spoiled</h1>
+                               <p class="rainbow-text">Здесь в дальнейшем будут публиковаться мои отзывы. ☻</p>
+                               <div class="footer-text">Сверяйте теги - @wetwolf</div>`;
+                    break;
+            }
+            document.getElementById('content').innerHTML = content;
+        }
+
+        // Открытие/закрытие меню настроек
+        function toggleSettingsMenu() {
+            const menu = document.getElementById('settingsMenu');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+            document.addEventListener('click', closeSettingsOnClickOutside);
+        }
+
+        // Закрытие меню при клике вне его
+        function closeSettingsOnClickOutside(event) {
+            const menu = document.getElementById('settingsMenu');
+            const userData = document.getElementById('userData');
+            if (!menu.contains(event.target) && !event.target.closest('.settings')) {
+                menu.style.display = 'none';
+                document.removeEventListener('click', closeSettingsOnClickOutside);
+            }
+            if (!userData.contains(event.target)) {
+                userData.style.display = 'none';
+            }
+        }
+
+        // Показ данных пользователя
+        function showUserData() {
+            // Закрываем меню настроек при открытии данных
+            const menu = document.getElementById('settingsMenu');
+            menu.style.display = 'none';
+
+            fetch('https://ipapi.co/json/')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('ip').textContent = `IP: ${data.ip}`;
+                    document.getElementById('country').textContent = `Country: ${data.country_name}`;
+                    document.getElementById('region').textContent = `Region: ${data.region}`;
+                    document.getElementById('city').textContent = `City: ${data.city}`; // Показываем город
+                    document.getElementById('userData').style.display = 'block';
+                })
+                .catch(error => alert('Не удалось получить данные пользователя'));
+        }
+
+        // Переключение темы и смена фото
+        let isDarkTheme = true;
+        function toggleTheme() {
+            const body = document.body;
+            const darkLeft = document.getElementById('dark-left');
+            const darkRight = document.getElementById('dark-right');
+            const lightLeft = document.getElementById('light-left');
+            const lightRight = document.getElementById('light-right');
+
+            if (isDarkTheme) {
+                body.style.backgroundColor = '#ddd5d5fb'; // Светлая тема
+                darkLeft.style.display = 'none';
+                darkRight.style.display = 'none';
+                lightLeft.style.display = 'block';
+                lightRight.style.display = 'block';
+            } else {
+                body.style.backgroundColor = '#0e0d0dfb'; // Темная тема
+                lightLeft.style.display = 'none';
+                lightRight.style.display = 'none';
+                darkLeft.style.display = 'block';
+                darkRight.style.display = 'block';
+            }
+            isDarkTheme = !isDarkTheme;
+        }
+
+        // Счётчик просмотров
+        let viewCounter = document.getElementById('view-counter');
+        let currentViews = parseInt(localStorage.getItem('viewCount')) || 0;
+        let userCounted = localStorage.getItem('userCounted') || false;
+
+        if (!userCounted) {
+            currentViews += 1;
+            viewCounter.textContent = 'Просмотры: ' + currentViews;
+            localStorage.setItem('viewCount', currentViews);
+            localStorage.setItem('userCounted', true);
+        } else {
+            viewCounter.textContent = 'Просмотры: ' + currentViews;
+        }
+
+        // След от курсора с символом "⨯"
+        let lastCrossTime = 0;
+        document.addEventListener('mousemove', function(e) {
+            const currentTime = Date.now();
+            if (currentTime - lastCrossTime > 200) {
+                const cross = document.createElement('div');
+                cross.className = 'cross';
+                cross.textContent = '⨯';
+                cross.style.left = e.pageX + 'px';
+                cross.style.top = e.pageY + 'px';
+                document.body.appendChild(cross);
+
+                setTimeout(() => {
+                    cross.remove();
+                }, 500);
+                lastCrossTime = currentTime;
+            }
+        });
+    </script>
+
+</body>
+</html>
+
+
+
+
+
+
